@@ -6,7 +6,7 @@ import csv
 import hashlib
 import json
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from aumai_datacommons.models import (
@@ -41,7 +41,7 @@ class DatasetCatalog:
     def search(
         self,
         query: str,
-        format: DatasetFormat | None = None,
+        dataset_format: DatasetFormat | None = None,
         tags: list[str] | None = None,
     ) -> list[DatasetMetadata]:
         """Search the catalog with optional filters.
@@ -51,7 +51,7 @@ class DatasetCatalog:
 
         Args:
             query: Substring to match against name and description.
-            format: If given, only datasets of this format are returned.
+            dataset_format: If given, only datasets of this format are returned.
             tags: If given, datasets must carry *all* of these tags.
 
         Returns:
@@ -64,7 +64,7 @@ class DatasetCatalog:
             text_match = query_lower in metadata.name.lower() or query_lower in metadata.description.lower()
             if not text_match:
                 continue
-            if format is not None and metadata.format != format:
+            if dataset_format is not None and metadata.format != dataset_format:
                 continue
             if tags is not None:
                 metadata_tag_set = set(metadata.tags)
@@ -261,7 +261,7 @@ class DatasetVersionManager:
         version_entry = DatasetVersion(
             version=new_version,
             changes=changes,
-            created_at=datetime.utcnow(),
+            created_at=datetime.now(tz=timezone.utc),
         )
         self._versions[dataset_id].append(version_entry)
         return version_entry

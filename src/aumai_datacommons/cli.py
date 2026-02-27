@@ -55,7 +55,7 @@ def search_command(
     """
     fmt = DatasetFormat(dataset_format) if dataset_format else None
     tag_list: list[str] = list(tags) if tags else []
-    results = _catalog.search(query=query, format=fmt, tags=tag_list or None)
+    results = _catalog.search(query=query, dataset_format=fmt, tags=tag_list or None)
 
     if not results:
         click.echo("No datasets found matching the given criteria.")

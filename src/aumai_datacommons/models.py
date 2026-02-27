@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 
 from pydantic import BaseModel, Field
 
@@ -34,7 +34,7 @@ class DatasetMetadata(BaseModel):
     tags: list[str] = Field(default_factory=list, description="Free-form search tags.")
     version: str = Field(default="1.0.0", description="Semantic version string.")
     created_at: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=lambda: datetime.now(tz=timezone.utc),
         description="UTC timestamp when the record was created.",
     )
 
@@ -45,7 +45,7 @@ class DatasetVersion(BaseModel):
     version: str = Field(..., description="Semantic version string.")
     changes: str = Field(..., description="Human-readable change description.")
     created_at: datetime = Field(
-        default_factory=datetime.utcnow,
+        default_factory=lambda: datetime.now(tz=timezone.utc),
         description="UTC timestamp when the version was created.",
     )
 
